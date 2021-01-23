@@ -37,7 +37,7 @@ def generate_images(network_pkl, seeds, truncation_psi):
 
 #----------------------------------------------------------------------------
 
-def generate_images_export(network_pkl, seeds, truncation_psi, output_array_path):
+def generate_images_export(network_pkl, seeds, truncation_psi):
     print('Loading networks from "%s"...' % network_pkl)
     _G, _D, Gs = pretrained_networks.load_networks(network_pkl)
     noise_vars = [var for name, var in Gs.components.synthesis.vars.items() if name.startswith('noise')]
@@ -55,11 +55,11 @@ def generate_images_export(network_pkl, seeds, truncation_psi, output_array_path
         z = rnd.randn(1, *Gs.input_shape[1:]) # [minibatch, component]
         tflib.set_vars({var: rnd.randn(*var.shape.as_list()) for var in noise_vars}) # [height, width]
         images = Gs.run(z, None, **Gs_kwargs) # [minibatch, height, width, channel]
-        PIL.Image.fromarray(images[0], 'RGB').save(dnnlib.make_run_dir_path('seed%04d.png' % seed))
-        my_array_element = [dnnlib.make_run_dir_path('seed%04d.png' % seed), z] #[file path, latent vector]
+        PIL.Image.fromarray(images[0], 'RGB').save(dnnlib.make_run_dir_path("/images"+'seed%04d.png' % seed))
+        my_array_element = [dnnlib.make_run_dir_path("/images"+'seed%04d.png' % seed), z] #[file path, latent vector]
         my_array.append(my_array_element)
 
-np.save(output_array_path, my_array)
+np.save(dnnlib.make_run_dir_path('array.npy'), my_array)
 
 #----------------------------------------------------------------------------
 def generate_images_from_z(network_pkl, z_array, truncation_psi):
