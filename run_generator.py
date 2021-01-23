@@ -79,7 +79,7 @@ def generate_images_from_z(network_pkl, z_array, truncation_psi):
         tflib.set_vars({var: rnd.randn(*var.shape.as_list()) for var in noise_vars}) # [height, width]
         images = Gs.run(z, None, **Gs_kwargs) # [minibatch, height, width, channel]
         PIL.Image.fromarray(images[0], 'RGB').save(dnnlib.make_run_dir_path('frame_%04d.png' % i)
-        i +=1
+        i += 1
         #my_array_element = [dnnlib.make_run_dir_path('seed%04d.png' % seed)]
 
 
