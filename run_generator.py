@@ -62,7 +62,7 @@ def generate_images_export(network_pkl, seeds, truncation_psi, output_array_path
     np.save(output_array_path, my_array)
 
 #----------------------------------------------------------------------------
-def generate_images_from_z(network_pkl, z_array, truncation_psi):
+def generate_images_from_z(network_pkl, z_array_path, truncation_psi):
     print('Loading networks from "%s"...' % network_pkl)
     _G, _D, Gs = pretrained_networks.load_networks(network_pkl)
     noise_vars = [var for name, var in Gs.components.synthesis.vars.items() if name.startswith('noise')]
@@ -74,6 +74,7 @@ def generate_images_from_z(network_pkl, z_array, truncation_psi):
     if truncation_psi is not None:
         Gs_kwargs.truncation_psi = truncation_psi
 
+    z_array = np.load(z_array_path, allow_pickle=True)
     for z in z_array:
         print('Generating image (%d/%d) ...' % (i, len(z_array)))
         images = Gs.run(z, None, **Gs_kwargs) # [minibatch, height, width, channel]
@@ -188,7 +189,7 @@ Run 'python %(prog)s <subcommand> --help' for subcommand help.''',
 
     parser_generate_images_from_z = subparsers.add_parser('generate-images-latents', help='Generate images')
     parser_generate_images_from_z.add_argument('--network', help='Network pickle filename', dest='network_pkl', required=True)
-    parser_generate_images_from_z.add_argument('--z-array', help='Array of latent vectors', required=True)
+    parser_generate_images_from_z.add_argument('--z-array-path', help='Array of latent vectors', required=True)
     parser_generate_images_from_z.add_argument('--truncation-psi', type=float, help='Truncation psi (default: %(default)s)', default=0.5)
     parser_generate_images_from_z.add_argument('--result-dir', help='Root directory for run results (default: %(default)s)', default='results', metavar='DIR')
 
