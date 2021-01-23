@@ -75,7 +75,6 @@ def generate_images_from_z(network_pkl, z_array, truncation_psi):
         Gs_kwargs.truncation_psi = truncation_psi
 
     for z in z_array:
-        global i
         print('Generating image (%d/%d) ...' % (i, len(z_array)))
         i +=1
         tflib.set_vars({var: rnd.randn(*var.shape.as_list()) for var in noise_vars}) # [height, width]
