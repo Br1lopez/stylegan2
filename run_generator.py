@@ -37,7 +37,7 @@ def generate_images(network_pkl, seeds, truncation_psi):
 
 #----------------------------------------------------------------------------
 
-def generate_images_export(network_pkl, seeds, truncation_psi, output_array_path):
+def generate_images_export(network_pkl, seeds, truncation_psi):
     print('Loading networks from "%s"...' % network_pkl)
     _G, _D, Gs = pretrained_networks.load_networks(network_pkl)
     noise_vars = [var for name, var in Gs.components.synthesis.vars.items() if name.startswith('noise')]
@@ -59,7 +59,7 @@ def generate_images_export(network_pkl, seeds, truncation_psi, output_array_path
         my_array_element = [dnnlib.make_run_dir_path("/images"+'seed%04d.png' % seed), z] #[file path, latent vector]
         my_array.append(my_array_element)
 
-    np.save(output_array_path, my_array2)
+    np.save(dnnlib.make_run_dir_path('array.npy'), my_array)
 
 #----------------------------------------------------------------------------
 def generate_images_from_z(network_pkl, z_array, truncation_psi):
@@ -180,12 +180,11 @@ Run 'python %(prog)s <subcommand> --help' for subcommand help.''',
     parser_generate_images.add_argument('--truncation-psi', type=float, help='Truncation psi (default: %(default)s)', default=0.5)
     parser_generate_images.add_argument('--result-dir', help='Root directory for run results (default: %(default)s)', default='results', metavar='DIR')
 
-    parser_generate_images_export = subparsers.add_parser('generate-images-exporting', help='Generate images and export array of latent vectors')
-    parser_generate_images_export .add_argument('--network', help='Network pickle filename', dest='network_pkl', required=True)
-    parser_generate_images_export .add_argument('--seeds', type=_parse_num_range, help='List of random seeds', required=True)
-    parser_generate_images_export .add_argument('--truncation-psi', type=float, help='Truncation psi (default: %(default)s)', default=0.5)
-    parser_generate_images_export .add_argument('--result-dir', help='Root directory for run results (default: %(default)s)', default='results', metavar='DIR')
-    parser_generate_images_export .add_argument('--output-array-path', help='Exported array path', default="array.npy")
+    parser_generate_images = subparsers.add_parser('generate-images-exporting', help='Generate images and export array of latent vectors')
+    parser_generate_images_exporting.add_argument('--network', help='Network pickle filename', dest='network_pkl', required=True)
+    parser_generate_images_exporting.add_argument('--seeds', type=_parse_num_range, help='List of random seeds', required=True)
+    parser_generate_images_exporting.add_argument('--truncation-psi', type=float, help='Truncation psi (default: %(default)s)', default=0.5)
+    parser_generate_images_exporting.add_argument('--result-dir', help='Root directory for run results (default: %(default)s)', default='results', metavar='DIR')
 
     parser_style_mixing_example = subparsers.add_parser('style-mixing-example', help='Generate style mixing video')
     parser_style_mixing_example.add_argument('--network', help='Network pickle filename', dest='network_pkl', required=True)
