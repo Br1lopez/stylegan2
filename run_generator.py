@@ -70,16 +70,16 @@ def generate_images_from_z(network_pkl, z_array, truncation_psi):
     Gs_kwargs = dnnlib.EasyDict()
     Gs_kwargs.output_transform = dict(func=tflib.convert_images_to_uint8, nchw_to_nhwc=True)
     Gs_kwargs.randomize_noise = False
-    i = 1
+    i = 0
     if truncation_psi is not None:
         Gs_kwargs.truncation_psi = truncation_psi
 
     for z in z_array:
         print('Generating image (%d/%d) ...' % (i, len(z_array)))
-        i +=1
         tflib.set_vars({var: rnd.randn(*var.shape.as_list()) for var in noise_vars}) # [height, width]
         images = Gs.run(z, None, **Gs_kwargs) # [minibatch, height, width, channel]
-        PIL.Image.fromarray(images[0], 'RGB').save(dnnlib.make_run_dir_path('seed%04d.png' % seed))
+        PIL.Image.fromarray(images[0], 'RGB').save(dnnlib.make_run_dir_path('frame_%04d.png' % i)
+        i +=1
         #my_array_element = [dnnlib.make_run_dir_path('seed%04d.png' % seed)]
 
 
