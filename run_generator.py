@@ -59,7 +59,7 @@ def generate_images_export(network_pkl, seeds, truncation_psi):
         my_array_element = [dnnlib.make_run_dir_path("/images"+'seed%04d.png' % seed), z] #[file path, latent vector]
         my_array.append(my_array_element)
 
-np.save(dnnlib.make_run_dir_path('array.npy'), my_array)
+    np.save(dnnlib.make_run_dir_path('array.npy'), my_array)
 
 #----------------------------------------------------------------------------
 def generate_images_from_z(network_pkl, z_array, truncation_psi):
